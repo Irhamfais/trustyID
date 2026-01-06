@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrustyID - Verifikasi Produk UMKM</title>
+    <!-- Pastikan mengarah ke file CSS yang benar -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="icon" type="image/x-icon" href="./images/favicon.jpeg" />
+  </head>
+  <body>
+    <!--Navbar-->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <h1>TrustyID</h1>
+        </div>
+        <!-- Tombol toggle untuk mobile nav -->
+        <button class="nav-toggle" id="navToggle" type="button">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#home" class="nav-link active">Beranda</a></li>
+          <li class="nav-item-protected">
+            <a href="#verifikasi" class="nav-link">Verifikasi</a>
+          </li>
+          <!-- Hanya tampil untuk role UMKM -->
+          <li id="navUmkmItem" style="display: none">
+            <a href="#umkm" class="nav-link">Ajukan Produk</a>
+          </li>
+          <!-- Hanya tampil untuk role Admin -->
+          <li id="navAdminItem" style="display: none">
+            <a href="#admin" class="nav-link">Panel Admin</a>
+          </li>
+          <li><a href="#tentang" class="nav-link">Tentang</a></li>
+          <li><a href="#kontak" class="nav-link">Kontak</a></li>
+          <li id="authNavItem">
+            <a href="#" class="nav-link nav-auth" id="authButton">Masuk</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!--Login Modal-->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-header">
+          <h2 id="modalTitle">Masuk ke TrustyID</h2>
+          <p id="modalSubtitle">
+            Silahkan masuk untuk mengakses fitur verifikasi
+          </p>
+        </div>
+
+        <!--Login Form-->
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="nama@email.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Masukkan password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Masuk</button>
+          <p class="auth-switch">
+            Belum punya akun? <a href="#" id="showRegister">Daftar sekarang</a>
+          </p>
+        </form>
+
+        <!--Register Form-->
+        <form id="registerForm" class="auth-form" style="display: none">
+          <div class="form-group">
+            <label for="registerName">Nama Lengkap</label>
+            <input
+              type="text"
+              id="registerName"
+              placeholder="Nama lengkap Anda"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input
+              type="email"
+              id="registerEmail"
+              placeholder="nama@email.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input
+              type="password"
+              id="registerPassword"
+              placeholder="Minimal 6 karakter"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerConfirmPassword">Konfirmasi Password</label>
+            <input
+              type="password"
+              id="registerConfirmPassword"
+              placeholder="Masukkan kembali password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerRole">Tipe Akun</label>
+            <select id="registerRole" required>
+              <option value="consumer" selected>Konsumen</option>
+              <option value="umkm">Pelaku UMKM</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Daftar</button>
+          <p class="auth-switch">
+            Sudah punya akun? <a href="#" id="showLogin">Masuk di sini</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!--beranda-->
+    <section id="home" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h2 class="hero-title">
+            Verifikasi Produk UMKM dalam Hitungan Detik
+          </h2>
+          <p class="hero-subtitle">
+            Pastikan keaslian dan sertifikasi produk UMKM dengan mudah dan
+            cepat.
+          </p>
+          <div class="hero-features">
+            <div class="feature-item">
+              <div class="feature-icon">✓</div>
+              <p>Verifikasi Halal</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">✓</div>
+              <p>Verifikasi BPOM</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">✓</div>
+              <p>Dll</p>
+            </div>
+          </div>
+          <div class="hero-cta">
+            <button class="btn btn-hero" id="heroCTA">
+              Mulai Verifikasi Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UMKM Submission Section (hanya untuk role umkm) -->
+    <section id="umkm" class="about-section" style="display: none">
+      <div class="container">
+        <h2 class="section-title">Ajukan Produk UMKM Anda</h2>
+        <p class="section-subtitle">
+          Lengkapi data produk di bawah ini untuk diajukan ke admin. Produk akan
+          berstatus <strong>pending</strong> hingga diverifikasi dan disetujui.
+        </p>
+
+        <div class="verification-form">
+          <form id="umkmProductForm">
+            <div class="form-group">
+              <label for="umkmProductCode"
+                >Nomor Registrasi / Kode Produk</label
+              >
+              <input
+                type="text"
+                id="umkmProductCode"
+                placeholder="Contoh: HALAL-22222 atau BPOM-54321"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="umkmProductName">Nama Produk</label>
+              <input
+                type="text"
+                id="umkmProductName"
+                placeholder="Nama produk UMKM Anda"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="umkmProducer">Nama Produsen / UMKM</label>
+              <input
+                type="text"
+                id="umkmProducer"
+                placeholder="Nama usaha / UMKM"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="umkmExpiryDate">Tanggal Kadaluarsa</label>
+              <input type="date" id="umkmExpiryDate" required />
+            </div>
+            <div class="form-group">
+              <label for="umkmCertificationType">Jenis Sertifikasi</label>
+              <select id="umkmCertificationType" required>
+                <option value="">Pilih jenis sertifikasi</option>
+                <option value="BPOM">BPOM</option>
+                <option value="Halal MUI">Halal MUI</option>
+                <option value="SNI">SNI</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="umkmCertificationLink"
+                >Bukti Sertifikasi (Berupa Link Drive)</label
+              >
+              <input
+                type="url"
+                id="umkmCertificationLink"
+                placeholder="https://drive.google.com/..."
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Ajukan Produk ke Admin
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!--verifikasi-->
+    <section id="verifikasi" class="verification-section protected-section">
+      <div class="container">
+        <!--login-->
+        <div class="login-required-overlay" id="loginOverlay">
+          <div class="login-required-content">
+            <h3>Fitur Terbatas</h3>
+            <p>Silahkan masuk untuk mengakses fitur verifikasi produk UMKM</p>
+            <button class="btn btn-primary" id="overlayLoginBtn">
+              Masuk / Daftar
+            </button>
+          </div>
+        </div>
+
+        <!--content-->
+        <div class="verification-content">
+          <h2 class="section-title">Verifikasi Produk UMKM</h2>
+          <p class="section-subtitle">
+            Masukkan nomor registrasi produk UMKM untuk melihat status
+            sertifikasi
+          </p>
+
+          <div class="user-welcome" id="userWelcome" style="display: none">
+            <p>Selamat datang, <strong id="userName"></strong>!</p>
+          </div>
+
+          <div class="verification-form">
+            <form id="verificationForm">
+              <div class="form-group">
+                <label for="productCode">Nomor Registrasi Produk</label>
+                <input
+                  type="text"
+                  id="productCode"
+                  placeholder="Contoh: BPOM-12345 atau HALAL-67890"
+                  required
+                />
+                <button type="submit" class="btn btn-primary">
+                  Verifikasi Sekarang
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!--hasil verifikasi-->
+          <div
+            class="result-container"
+            id="resultContainer"
+            style="display: none"
+          >
+            <div class="result-card">
+              <div class="result-header">
+                <div id="statusBadge" class="status-badge"></div>
+                <h3 id="productName">Nama Produk</h3>
+              </div>
+              <div class="result-body">
+                <div class="info-row">
+                  <span class="info-label">Nomor Registrasi</span>
+                  <span id="regNumber" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Produsen</span>
+                  <span id="producer" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Tanggal Kadaluarsa</span>
+                  <span id="expiryDate" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Sertifikasi</span>
+                  <span id="certification" class="info-value"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Panel Section (hanya untuk role admin) -->
+    <section id="admin" class="verification-section" style="display: none">
+      <div class="container">
+        <h2 class="section-title">Panel Validasi Admin</h2>
+        <p class="section-subtitle">
+          Daftar pengajuan produk UMKM yang menunggu verifikasi dan persetujuan.
+        </p>
+
+        <div class="user-welcome" id="adminWelcome" style="display: none">
+          <p>
+            Anda login sebagai <strong id="adminName"></strong> (Admin). Gunakan
+            panel ini dengan bijak.
+          </p>
+        </div>
+
+        <div class="verification-form">
+          <!-- Tab Navigation -->
+          <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="pending">
+              Pengajuan Pending
+            </button>
+            <button class="admin-tab-btn" data-tab="verified">
+              Produk Terverifikasi
+            </button>
+          </div>
+
+          <!-- Tab Content: Pending -->
+          <div class="admin-tab-content active" id="adminTabPending">
+            <div class="form-group">
+              <button
+                id="refreshPendingBtn"
+                class="btn btn-primary"
+                type="button"
+              >
+                Muat Ulang Pengajuan Pending
+              </button>
+            </div>
+
+            <div class="result-container" id="adminPendingContainer">
+              <div class="result-card">
+                <div class="result-header">
+                  <h3>Pengajuan Produk Pending</h3>
+                </div>
+                <div class="result-body">
+                  <div id="adminPendingEmpty" style="display: none">
+                    <p>Tidak ada pengajuan produk yang menunggu verifikasi.</p>
+                  </div>
+                  <div class="admin-table-wrapper">
+                    <table class="admin-table" id="adminPendingTable">
+                      <thead>
+                        <tr>
+                          <th>Kode Produk</th>
+                          <th>Nama Produk</th>
+                          <th>Produsen</th>
+                          <th>UMKM</th>
+                          <th>Jenis Sertifikasi</th>
+                          <th>Link Bukti</th>
+                          <th>Kadaluarsa</th>
+                          <th>Diajukan</th>
+                          <th>Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody id="adminPendingBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: Verified -->
+          <div
+            class="admin-tab-content"
+            id="adminTabVerified"
+            style="display: none"
+          >
+            <div class="form-group">
+              <button
+                id="refreshVerifiedBtn"
+                class="btn btn-primary"
+                type="button"
+              >
+                Muat Ulang Produk Terverifikasi
+              </button>
+            </div>
+
+            <div class="result-container" id="adminVerifiedContainer">
+              <div class="result-card">
+                <div class="result-header">
+                  <h3>Produk Terverifikasi</h3>
+                </div>
+                <div class="result-body">
+                  <div id="adminVerifiedEmpty" style="display: none">
+                    <p>Tidak ada produk yang sudah terverifikasi.</p>
+                  </div>
+                  <div class="admin-table-wrapper">
+                    <table class="admin-table" id="adminVerifiedTable">
+                      <thead>
+                        <tr>
+                          <th>Kode Produk</th>
+                          <th>Nama Produk</th>
+                          <th>Produsen</th>
+                          <th>UMKM</th>
+                          <th>Jenis Sertifikasi</th>
+                          <th>Link Bukti</th>
+                          <th>Kadaluarsa</th>
+                          <th>Status</th>
+                          <th>Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody id="adminVerifiedBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--tentang-->
+    <section id="tentang" class="about-section">
+      <div class="container">
+        <h2 class="section-title">Tentang TrustyID</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <h3>Solusi Transparansi untuk UMKM</h3>
+            <p>
+              TrustyID adalah platform verifikasi produk yang membantu konsumen
+              memverifikasi keaslian dan status sertifikasi produk UMKM lokal
+              secara cepat dan mudah.
+            </p>
+            <p>
+              Kami berkomitmen untuk meningkatkan kredibilitas UMKM dan
+              memberikan kepercayaan kepada konsumen melalui transparansi
+              informasi produk.
+            </p>
+            <div class="about-cta">
+              <button class="btn btn-primary" id="aboutCTA">
+                Bergabung Sekarang
+              </button>
+            </div>
+          </div>
+          <div class="about-stats">
+            <div class="stat-card">
+              <h4>1000+</h4>
+              <p>Produk Terverifikasi</p>
+            </div>
+            <div class="stat-card">
+              <h4>500+</h4>
+              <p>UMKM Terdaftar</p>
+            </div>
+            <div class="stat-card">
+              <h4>99.9%</h4>
+              <p>Akurasi Data</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--kontak-->
+    <section id="kontak" class="contact-section">
+      <div class="container">
+        <h2 class="section-title">Hubungi Kami</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <h3>Informasi Kontak</h3>
+            <p>Email: support@trustyid.com</p>
+            <p>Telepon: +62 123 4567 890</p>
+            <p>Alamat: Jl. No.123, Bali, Indonesia</p>
+          </div>
+          <div class="contact-form">
+            <form id="contact-form">
+              <div class="form-group">
+                <input type="text" placeholder="Nama Anda" required />
+              </div>
+              <div class="form-group">
+                <input type="email" placeholder="Email Anda" required />
+              </div>
+              <div class="form-group">
+                <textarea placeholder="Pesan Anda" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Kirim Pesan</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--Footer-->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 TrustyID. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- Urutan script: data -> utils -> api -> main (yang pakai semuanya) -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
